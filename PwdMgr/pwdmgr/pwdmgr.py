@@ -68,15 +68,19 @@ class PasswordManager(object):
         self.saveToFile()
 
     def showMenu(self):
-        opt = self._readInput(Constants.MENU_MAIN)
-        if (opt == "1"):
-            self.addAccount()
-        elif (opt == "2"):
-            self.updateAccount()
-        elif (opt == "3"):
-            self.removeAccount()
-        elif (opt == "4"):
-            self.listAccounts()
+        while (True):
+            opt = self._readInput(Constants.MENU_MAIN)
+            if (opt == "1"):
+                self.addAccount()
+            elif (opt == "2"):
+                self.updateAccount()
+            elif (opt == "3"):
+                self.removeAccount()
+            elif (opt == "4"):
+                self.listAccounts()
+            else:
+                print("Leaving password manager")
+                break
 
     def addAccount(self):
         category = self.chooseCategory()
