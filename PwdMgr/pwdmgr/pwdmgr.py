@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 #!/usr/bin/python
 
+import getpass
 import json
 
 import os
@@ -81,7 +82,7 @@ class PasswordManager(object):
         category = self.chooseCategory()
         accType = self._readInput("Input type of the account:")
         user = self._readInput("User name:")
-        password = self._readInput("Input password:")
+        password = self._readPassword("Input password:")
 
         account = self.checkValidation(user, category, accType)
         if (account is None):
@@ -147,7 +148,7 @@ class PasswordManager(object):
         accountSaved = self.checkValidation(user, category, accType)
         if (accountSaved is not None):
             for index in range(0, 3):
-                password = self._readInput("Verify password:")
+                password = self._readPassword("Verify password:")
                 if (accountSaved.checkPassword(password)):
                     return accountSaved
                 elif (index == 2):
@@ -161,8 +162,8 @@ class PasswordManager(object):
 
     def getNewPassword(self):
         for i in range(0, 3):
-            passwordOne = self._readInput("New password:")
-            passwordTwo = self._readInput("Confirm new password:")
+            passwordOne = self._readPassword("New password:")
+            passwordTwo = self._readPassword("Confirm new password:")
             if (passwordOne == passwordTwo):
                 return passwordOne
             elif (i < 2):
@@ -182,3 +183,6 @@ class PasswordManager(object):
 
     def _readInput(self, message):
         return raw_input(message)
+
+    def _readPassword(self, message):
+        return getpass.getpass(message)
