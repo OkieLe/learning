@@ -10,6 +10,7 @@ import {
 import { connect } from 'react-redux'; // 引入connect函数
 
 import * as loginAction from '../redux/action/Login';// 导入action方法
+import * as accAction from '../redux/action/AccAction';
 
 class AccountsList extends Component {
 
@@ -19,7 +20,9 @@ class AccountsList extends Component {
 
   constructor(props) {
     super(props);
-    this.state = {selected: -1};
+    this.state = {
+      selected: -1,
+    };
   }
 
   logout() {
@@ -45,10 +48,8 @@ class AccountsList extends Component {
       <View style={styles.container}>
         <FlatList
           style={ {flex: 1,} }
-          data={[
-              {key : 1, name : "xingled@gmail.com", source : "github"},
-              {key : 2, name : "boopited@gmail.com", source : "gmail"},
-          ]}
+          data={this.props.data }
+          refreshing={this.props.refreshing}
           renderItem = {this.renderItem}
         />
         <TouchableOpacity onPress={this.logout.bind(this)} style={styles.loginBtn}>
@@ -89,8 +90,11 @@ export default connect(
     loading : state.login.loading,
     hint : state.login.hint,
     user : state.login.user,
+    data : state.query.list,
+    refreshing : state.query.listLoading,
   }),
   (dispatch) => ({
     logout : () => dispatch(loginAction.logout()),
+    loadData : () => dispatch(accAction.getAccountList())
   })
 )(AccountsList)

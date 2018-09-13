@@ -8,11 +8,13 @@ import configureStore from './redux/store/Store';
 import AccountsList from './containers/AccountsList';
 import DetailPage from './containers/DetailPage';
 import LoginPage from './containers/LoginPage';
+import EditPage from './containers/EditPage';
 
 const Pages = createStackNavigator({
   Login: { screen: LoginPage },
   Accounts: { screen: AccountsList },
-  Detail: { screen: DetailPage }
+  Detail: { screen: DetailPage },
+  Edit: { screen: EditPage },
 });
 
 const store = configureStore();
