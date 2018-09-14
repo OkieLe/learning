@@ -54,9 +54,9 @@ export function getAccount(id) {
 
 export function getAccounts() {
   return new Promise((resolve, reject) => {
-    storage.getAllDataForKey(ACCOUNTS_KEY, (accouts) => {
-      if (accouts == null || accounts.size() == 0) {
-        resolve(accouts);
+    storage.getAllDataForKey(ACCOUNTS_KEY, (accounts) => {
+      if (accounts == null || accounts.length == 0) {
+        resolve(accounts);
       } else {
         reject("No data");
       }
