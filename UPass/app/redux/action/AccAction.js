@@ -9,7 +9,8 @@ export function getAccountDetail(id) {
         dispatch(loadDetail(false, data));
       })
       .catch(reason => {
-        console.warn(reason);
+        console.log(reason);
+        dispatch(loadDetail(false, null));
       });
   };
 }
@@ -29,7 +30,7 @@ export function getAccountList() {
         dispatch(loadList(false, data));
       })
       .catch(reason => {
-        console.warn(reason);
+        console.log(reason);
       });
   };
 }
@@ -58,15 +59,15 @@ export function delAccount(id, dispatch) {
 function checkAndSave(account, dispatch) {
   const nameLen = account.username.length;
   const pswdLen = account.password.length;
-  if (nameLen == 0 || pswdLen == 0) {
-    dispatch(validate("Name or password empty"));
+  if (nameLen < 6 || pswdLen < 8) { //Just for test, should validate earlier
+    dispatch(validate("Name or password invalid"));
   } else {
     addAccount(account)
       .then(data => {
         dispatch(saveDone(true));
       })
       .catch(reason => {
-        console.warn(reason);
+        console.log(reason);
         dispatch(saveDone(false));
       });
   }
@@ -78,7 +79,7 @@ function checkAndDelete(id, dispatch) {
       dispatch(delDone(true));
     })
     .catch(reason => {
-      console.warn(reason);
+      console.log(reason);
       dispatch(delDone(false));
     })
 }

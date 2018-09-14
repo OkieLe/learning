@@ -14,7 +14,7 @@ const Pages = createStackNavigator({
   Login: { screen: LoginPage },
   Accounts: { screen: AccountsList },
   Detail: { screen: DetailPage },
-  Edit: { screen: EditPage },
+  Editor: { screen: EditPage },
 });
 
 const store = configureStore();

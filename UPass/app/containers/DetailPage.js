@@ -6,6 +6,8 @@ import {
 } from 'react-native';
 
 import { connect } from 'react-redux'; // 引入connect函数
+import { CATEGORY_DEFAULT } from '../data/DbHelper';
+import * as accAction from "../redux/action/AccAction";
 
 class DetailPage extends Component {
 
@@ -13,21 +15,28 @@ class DetailPage extends Component {
     title: 'Detail',
   };
 
-  shouldComponentUpdate(nextProps, nextState) {
-    if (this.props.user != null && nextProps.user == null) {
-      this.props.navigation.goBack();
-    }
-    return nextProps.user != this.props.user;
+  constructor(props) {
+    super(props);
+    const { navigation } = this.props;
+    const id = navigation.getParam('id', -1);
+    this.state = {
+      id : id,
+    };
+  }
+
+  componentDidMount() {
+    this.props.loadData(this.state.id);
   }
 
   render() {
-    const { navigation } = this.props;
-    const key = navigation.getParam('key', 'NO-KEY');
-    const name = navigation.getParam('name', 'UNSET');
     return(
       <View style={styles.container}>
-        <Text style={styles.item} >Key: { key.toString() }</Text>
-        <Text style={styles.item} >Name: { name }</Text>
+        <Text
+          style={styles.item} >
+          Key: { this.state.id.toString() }</Text>
+        <Text style={styles.item} >Name: { this.props.data == null ? "" : this.props.data.username }</Text>
+        <Text style={styles.item} >Category: {this.props.data == null ? "" : this.props.data.category}</Text>
+        <Text style={styles.item} >Type: {this.props.data == null ? "" : this.props.data.type}</Text>
       </View>
     )
   }
@@ -36,6 +45,7 @@ class DetailPage extends Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    padding: 16,
     alignItems: 'flex-start',
     backgroundColor: '#F5FFFF'
   },
@@ -48,6 +58,12 @@ const styles = StyleSheet.create({
 
 export default connect(
   (state) => ({
-    user : state.user,
+    loading : state.query.detailLoading,
+    data : state.query.detail,
+    result : state.editor.result,
+  }),
+  dispatch => ({
+    loadData : (id) => dispatch(accAction.getAccountDetail(id)),
+    delAcc : (id) => dispatch(accAction.delAccount(id)),
   })
 )(DetailPage)

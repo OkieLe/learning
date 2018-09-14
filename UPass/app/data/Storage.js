@@ -14,7 +14,7 @@ const createStorage = () => {
     storageBackend: AsyncStorage,
 
     // 数据过期时间，默认一整天（1000 * 3600 * 24 毫秒），设为null则永不过期
-    defaultExpires: null, //defaultExpires,
+    defaultExpires: null,
 
     // 读写时在内存中缓存数据。默认启用。
     enableCache: true,
@@ -39,19 +39,53 @@ const _storage = {
 
   // 使用key来保存数据。这些数据一般是全局独有的，常常需要调用的。
   // 除非你手动移除，这些数据会被永久保存，而且默认不会过期。
-  save(key, id, obj) {
+  saveMeta(key, data) {
+    initStorage()
+    storage.save({
+      key: key,  // 注意: 请不要在key中使用_下划线符号!
+      data: data,
+      // 如果不指定过期时间，则会使用defaultExpires参数
+      // 如果设为null，则永不过期
+      expires: null,
+    })
+  },
+
+  save(key, id, data) {
     initStorage()
     storage.save({
       key: key,  // 注意: 请不要在key中使用_下划线符号!
       id: id,
-      data: obj,
+      data: data,
       // 如果不指定过期时间，则会使用defaultExpires参数
       // 如果设为null，则永不过期
-      expires: defaultExpires
+      expires: null,
     })
   },
 
   // 取数据
+  loadMeta(key, callBack) {
+    initStorage()
+    storage.load({
+      key: key,
+      autoSync: false,
+      syncInBackground: false,
+    }).then(ret => {
+      callBack && callBack(ret, true);
+      return ret;
+    }).catch(err => {
+      console.log(err.message);
+      switch (err.name) {
+        case 'NotFoundError':
+          callBack && callBack(null, false);
+          break;
+        case 'ExpiredError':
+          callBack && callBack(null, false);
+          break;
+      }
+      return null;
+    })
+  },
+
   load(key, id, callBack) {
     initStorage()
     storage.load({
@@ -77,19 +111,20 @@ const _storage = {
       // 也没有办法“变成”同步返回
       // 你也可以使用“看似”同步的async/await语法
       callBack && callBack(ret, true);
-      return ret
+      return ret;
     }).catch(err => {
       //如果没有找到数据且没有sync方法，
       //或者有其他异常，则在catch中返回
-      console.warn(err.message);
+      console.log(err.message);
       switch (err.name) {
         case 'NotFoundError':
-          callback && callback(null, false);
-          break
+          callBack && callBack(null, false);
+          break;
         case 'ExpiredError':
-          callback && callback(null, false);
-          break
+          callBack && callBack(null, false);
+          break;
       }
+      return null;
     })
   },
 

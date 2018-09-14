@@ -25,21 +25,28 @@ class AccountsList extends Component {
     };
   }
 
+  componentDidMount() {
+    this.props.loadData();
+  }
+
   logout() {
     this.props.navigation.replace("Login");
     this.props.logout();
   }
 
+  addNew() {
+    this.props.navigation.push("Editor");
+  }
+
   renderItem = ({ item }) => (
     <TouchableOpacity style={styles.item}
       onPress={() => {
-        this.setState({selected : item.key});
+        this.setState({selected : item.id});
         this.props.navigation.push("Detail", {
-          key : item.key,
-          name : item.name,
+          id : item.id,
         });
       }} >
-      <Text>{item.name}</Text>
+      <Text>{item.username}</Text>
     </TouchableOpacity>
   );
 
@@ -49,14 +56,18 @@ class AccountsList extends Component {
         <FlatList
           style={ {flex: 1,} }
           data={this.props.data }
+          keyExtractor={(item, index) => item.id.toString()}
           refreshing={this.props.refreshing}
           renderItem = {this.renderItem}
         />
-        <TouchableOpacity onPress={this.logout.bind(this)} style={styles.loginBtn}>
-          <View>
-            <Text>退出登录</Text>
-          </View>
-        </TouchableOpacity>
+        <View style={styles.buttonBar}>
+          <TouchableOpacity onPress={this.logout.bind(this)} style={styles.loginBtn}>
+              <Text>退出登录</Text>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={this.addNew.bind(this)} style={styles.loginBtn}>
+              <Text>添加账户</Text>
+          </TouchableOpacity>
+        </View>
       </View>
     )
   }
@@ -75,12 +86,20 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: '#ccc'
   },
-  loginBtn: {
+  buttonBar: {
     marginTop: 20,
-    width: 120,
+    width: "100%",
+    height: 40,
+    flexDirection: "row",
+    alignItems: "center"
+  },
+  loginBtn: {
+    flex: 1,
     alignSelf: "center",
     alignItems: "center",
     backgroundColor: "#DDDDDD",
+    marginLeft: 10,
+    marginRight: 10,
     padding: 10
   }
 })
