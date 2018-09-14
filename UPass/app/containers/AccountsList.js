@@ -35,14 +35,20 @@ class AccountsList extends Component {
   }
 
   addNew() {
-    this.props.navigation.push("Editor");
+    this.props.navigation.navigate("Editor", {
+      setResult : (update) => {
+        if (update) {
+          this.props.loadData();
+        }
+      },
+    });
   }
 
   renderItem = ({ item }) => (
     <TouchableOpacity style={styles.item}
       onPress={() => {
         this.setState({selected : item.id});
-        this.props.navigation.push("Detail", {
+        this.props.navigation.navigate("Detail", {
           id : item.id,
         });
       }} >
@@ -54,7 +60,7 @@ class AccountsList extends Component {
     return(
       <View style={styles.container}>
         <FlatList
-          style={ {flex: 1,} }
+          style={ {flex: 1, width: "100%"} }
           data={this.props.data }
           keyExtractor={(item, index) => item.id.toString()}
           refreshing={this.props.refreshing}

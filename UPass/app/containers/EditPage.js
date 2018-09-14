@@ -36,6 +36,7 @@ class EditPage extends Component {
       type: type,
       dataChanged: false,
     };
+    this.goBackWithResult.bind(this);
     this.validInput.bind(this);
     this.alertInvalid.bind(this);
   }
@@ -59,8 +60,13 @@ class EditPage extends Component {
       this.props.saveAcc(this.state);
     } else {
       console.log("Nothing to save");
-      this.props.navigation.goBack();
+      this.goBackWithResult(false);
     }
+  }
+
+  goBackWithResult(result) {
+    this.props.navigation.state.params.setResult(result);
+    this.props.navigation.goBack();
   }
 
   alertInvalid(message) {
@@ -85,19 +91,19 @@ class EditPage extends Component {
           {text: 'Cancel', onPress: () => console.log('Cancel Pressed'), style: 'cancel'},
           {text: 'OK', onPress: () => {
               console.log('OK Pressed');
-              this.props.navigation.goBack();
+              this.goBackWithResult(false);
             }
           },
         ],
         { cancelable: false });
     } else {
-      this.props.navigation.goBack();
+      this.goBackWithResult(false);
     }
   }
 
   shouldComponentUpdate(nextProps, nextState) {
     if (nextProps.save && nextProps.result) {
-      this.props.navigation.goBack();
+      this.goBackWithResult(true);
     }
     return true;
   }
